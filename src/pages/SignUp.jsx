@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useAuth } from '../xcontext/AuthContext.jsx';
 import AuthShell from './AuthLayout.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 

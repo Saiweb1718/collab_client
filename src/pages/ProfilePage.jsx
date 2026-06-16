@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { userApi, uploadApi } from '../api/index.js';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useAuth } from '../xcontext/AuthContext.jsx';
 import Avatar from '../components/ui/Avatar.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 

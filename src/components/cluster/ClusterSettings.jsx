@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { clusterApi } from '../../api/index.js';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../xcontext/AuthContext.jsx';
 import Avatar from '../ui/Avatar.jsx';
 import Modal from '../ui/Modal.jsx';
 import Spinner from '../ui/Spinner.jsx';

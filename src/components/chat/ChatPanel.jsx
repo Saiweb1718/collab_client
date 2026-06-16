@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Smile, Paperclip, Send, Check, X, ChevronLeft } from 'lucide-react';
 import { getSocket } from '../../lib/socket.js';
 import { chatApi, uploadApi } from '../../api/index.js';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../xcontext/AuthContext.jsx';
 import MessageBubble from './MessageBubble.jsx';
 import Avatar from '../ui/Avatar.jsx';
 import Spinner from '../ui/Spinner.jsx';

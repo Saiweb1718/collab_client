@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Settings, MessageSquare, Plus, Lock, Globe, Copy, Check } from 'lucide-react';
 import { clusterApi, projectApi } from '../api/index.js';
-import { usePresence } from '../context/PresenceContext.jsx';
+import { usePresence } from '../xcontext/PresenceContext.jsx';
 import Avatar from '../components/ui/Avatar.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Spinner from '../components/ui/Spinner.jsx';

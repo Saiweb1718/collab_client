@@ -1,5 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useAuth } from '../xcontext/AuthContext.jsx';
 import Spinner from './ui/Spinner.jsx';
 
 const FullScreenLoader = () => (

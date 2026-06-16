@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { clusterApi, projectApi, taskApi } from '../api/index.js';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useAuth } from '../xcontext/AuthContext.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
 import { gradientFor } from '../lib/format.js';
 

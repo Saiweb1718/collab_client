@@ -4,7 +4,7 @@ import { Menu, Hexagon } from 'lucide-react';
 import Sidebar from './Sidebar.jsx';
 import NotificationsBell from '../ui/NotificationsBell.jsx';
 import ThemeToggle from '../ui/ThemeToggle.jsx';
-import { PresenceProvider } from '../../context/PresenceContext.jsx';
+import { PresenceProvider } from '../../xcontext/PresenceContext.jsx';
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);

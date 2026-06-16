@@ -2,9 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import './index.css';
-
-import { AuthProvider } from './context/AuthContext.jsx';
-import { ThemeProvider } from './context/ThemeContext.jsx';
+import { AuthProvider } from './xcontext/AuthContext.jsx';
+import { ThemeProvider } from './xcontext/ThemeContext.jsx';
 import { RequireAuth, RedirectIfAuth } from './components/RouteGuards.jsx';
 import AppLayout from './components/layout/AppLayout.jsx';
 

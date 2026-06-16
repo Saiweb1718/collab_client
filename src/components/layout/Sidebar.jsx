@@ -13,7 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { clusterApi, chatApi } from '../../api/index.js';
-import { useAuth } from '../../context/AuthContext.jsx';
+import { useAuth } from '../../xcontext/AuthContext.jsx';
 import { getSocket } from '../../lib/socket.js';
 import { useIsDesktop } from '../../lib/useMediaQuery.js';
 import Avatar from '../ui/Avatar.jsx';

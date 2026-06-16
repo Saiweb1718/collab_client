@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { chatApi, userApi } from '../api/index.js';
-import { useAuth } from '../context/AuthContext.jsx';
-import { usePresence } from '../context/PresenceContext.jsx';
+import { useAuth } from '../xcontext/AuthContext.jsx';
+import { usePresence } from '../xcontext/PresenceContext.jsx';
 import { getSocket } from '../lib/socket.js';
 import { useIsDesktop } from '../lib/useMediaQuery.js';
 import Avatar from '../components/ui/Avatar.jsx';
