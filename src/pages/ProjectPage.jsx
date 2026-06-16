@@ -11,6 +11,7 @@ import ProjectSettings from '../components/project/ProjectSettings.jsx';
 import RequestsModal from '../components/project/RequestsModal.jsx';
 import TaskCalendar from '../components/project/TaskCalendar.jsx';
 import { useIsDesktop } from '../lib/useMediaQuery.js';
+import { getSocket } from '../lib/socket.js';
 
 const COLUMNS = [
   { key: 'todo', label: 'To Do', dot: 'bg-haze/50' },
@@ -75,6 +76,17 @@ export default function ProjectPage() {
     load();
   }, [load]);
 
+  // Live-refresh when my membership in this project changes (e.g. my join
+  // request was just approved, or I was added/removed by an admin).
+  useEffect(() => {
+    const s = getSocket();
+    const onMembership = (p) => {
+      if (p?.projectId === projectId) load();
+    };
+    s.on('membership:changed', onMembership);
+    return () => s.off('membership:changed', onMembership);
+  }, [projectId, load]);
+
   const requestJoin = async () => {
     setRequesting(true);
     try {
@@ -124,24 +136,27 @@ export default function ProjectPage() {
             <p className="mt-0.5 max-w-2xl text-sm text-haze">{project.project_description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          {project.is_member ? (
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Managers (project lead OR workspace admin) can always manage —
+              even a workspace admin who isn't a project member, which is how a
+              leaderless/orphaned project gets recovered. */}
+          {project.is_manager && (
             <>
-              {project.is_manager && (
-                <button className="btn-secondary relative" onClick={() => setRequestsOpen(true)}>
-                  <UserPlus size={15} /> Requests
-                  {requestCount > 0 && (
-                    <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[#ff3b30] px-1 text-[11px] font-bold text-white">
-                      {requestCount}
-                    </span>
-                  )}
-                </button>
-              )}
-              {project.is_manager && (
-                <button className="btn-secondary" onClick={() => setSettingsOpen(true)}>
-                  <Settings size={15} /> Settings
-                </button>
-              )}
+              <button className="btn-secondary relative" onClick={() => setRequestsOpen(true)}>
+                <UserPlus size={15} /> Requests
+                {requestCount > 0 && (
+                  <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[#ff3b30] px-1 text-[11px] font-bold text-white">
+                    {requestCount}
+                  </span>
+                )}
+              </button>
+              <button className="btn-secondary" onClick={() => setSettingsOpen(true)}>
+                <Settings size={15} /> Settings
+              </button>
+            </>
+          )}
+          {project.is_member && (
+            <>
               <button
                 className="btn-secondary"
                 onClick={() => (isDesktop ? setShowChat((s) => !s) : setChatDrawerOpen(true))}
@@ -152,13 +167,16 @@ export default function ProjectPage() {
                 <Plus size={15} /> New task
               </button>
             </>
-          ) : project.pending_request ? (
-            <span className="chip bg-[#ff9500]/10 text-[#ff9500]">⏳ Request pending</span>
-          ) : (
-            <button className="btn-primary" onClick={requestJoin} disabled={requesting}>
-              {requesting ? <Spinner size={16} /> : 'Request to join'}
-            </button>
           )}
+          {!project.is_member &&
+            !project.is_manager &&
+            (project.pending_request ? (
+              <span className="chip bg-[#ff9500]/10 text-[#ff9500]">⏳ Request pending</span>
+            ) : (
+              <button className="btn-primary" onClick={requestJoin} disabled={requesting}>
+                {requesting ? <Spinner size={16} /> : 'Request to join'}
+              </button>
+            ))}
         </div>
       </header>
 
@@ -170,7 +188,7 @@ export default function ProjectPage() {
         }`}
       >
         <div className="min-w-0 overflow-x-auto overflow-y-auto px-4 py-5 sm:px-8 sm:py-6">
-          {!project.is_member ? (
+          {!project.is_member && !project.is_manager ? (
             <div className="mx-auto mt-16 max-w-md rounded-3xl border border-dashed border-fill/15 p-10 text-center text-haze">
               <div className="mb-2 text-4xl">🔒</div>
               {project.pending_request

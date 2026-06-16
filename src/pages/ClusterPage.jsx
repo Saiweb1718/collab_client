@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Settings, MessageSquare, Plus, Lock, Globe, Copy, Check } from 'lucide-react';
 import { clusterApi, projectApi } from '../api/index.js';
 import { usePresence } from '../xcontext/PresenceContext.jsx';
+import { getSocket } from '../lib/socket.js';
 import Avatar from '../components/ui/Avatar.jsx';
 import Modal from '../components/ui/Modal.jsx';
 import Spinner from '../components/ui/Spinner.jsx';
@@ -52,6 +53,18 @@ export default function ClusterPage() {
 
   useEffect(() => {
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clusterId]);
+
+  // Refresh the project list when my membership changes in this workspace
+  // (e.g. a join request was approved → a project flips from "pending" to open).
+  useEffect(() => {
+    const s = getSocket();
+    const onMembership = (p) => {
+      if (p?.clusterId === clusterId) load();
+    };
+    s.on('membership:changed', onMembership);
+    return () => s.off('membership:changed', onMembership);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clusterId]);
 
