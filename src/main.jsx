@@ -1,44 +1,56 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import App from "./App.jsx";
-import SignUpPage from "./Components/SignUp.jsx";
-import "./index.css";
-import LoginPage from "./Components/Login.jsx";
-import HomePage from "./Pages/HomePage.jsx";
-import NavBar from "./AppComponenets/NavBar.jsx";
-import { PopUpContextProvider } from "./Context/PopUpContext.jsx";
-import { AuthProvider } from "./Context/authContext.jsx";
-import CompanyProjects from "./Pages/CompanyPage.jsx";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import './index.css';
 
+import { AuthProvider } from './context/AuthContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
+import { RequireAuth, RedirectIfAuth } from './components/RouteGuards.jsx';
+import AppLayout from './components/layout/AppLayout.jsx';
+
+import Login from './pages/Login.jsx';
+import SignUp from './pages/SignUp.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import ClusterPage from './pages/ClusterPage.jsx';
+import ProjectPage from './pages/ProjectPage.jsx';
+import MessagesPage from './pages/MessagesPage.jsx';
+import MyTasks from './pages/MyTasks.jsx';
+import ProfilePage from './pages/ProfilePage.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <HomePage />,
-    children: [  
-      {
-        path:"/company",
-        element:<CompanyProjects/>
-      }
+    element: <RedirectIfAuth />,
+    children: [
+      { path: '/login', element: <Login /> },
+      { path: '/signup', element: <SignUp /> },
     ],
   },
   {
-    path:"/login",
-    element:<LoginPage/>
-  }
+    element: <RequireAuth />,
+    children: [
+      {
+        element: <AppLayout />,
+        children: [
+          { path: '/', element: <Dashboard /> },
+          { path: '/clusters/:clusterId', element: <ClusterPage /> },
+          { path: '/projects/:projectId', element: <ProjectPage /> },
+          { path: '/messages', element: <MessagesPage /> },
+          { path: '/tasks', element: <MyTasks /> },
+          { path: '/profile', element: <ProfilePage /> },
+          { path: '/profile/:userId', element: <ProfilePage /> },
+        ],
+      },
+    ],
+  },
+  { path: '*', element: <Login /> },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
-
-    <PopUpContextProvider>
+    <ThemeProvider>
+      <AuthProvider>
         <RouterProvider router={router} />
-      </PopUpContextProvider>
-
-    </AuthProvider>
-     
- 
+      </AuthProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

@@ -1,17 +1,62 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { authApi } from '../api/index.js';
+import { connectSocket, disconnectSocket } from '../lib/socket.js';
 
-const authContext = React.createContext();
+const AuthContext = createContext(null);
 
-const AuthProvider = ({ children }) => {
+export const useAuth = () => useContext(AuthContext);
+
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  
+  // Bootstrap session from the httpOnly cookie.
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await authApi.me();
+        setUser(res.data.user);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  // Keep the socket connected exactly while authenticated.
+  useEffect(() => {
+    if (user) connectSocket();
+    else disconnectSocket();
+    return () => {};
+  }, [user]);
+
+  const login = useCallback(async (credentials) => {
+    const res = await authApi.login(credentials);
+    setUser(res.data.user);
+    return res.data.user;
+  }, []);
+
+  const signup = useCallback(async (body) => {
+    const res = await authApi.signup(body);
+    setUser(res.data.user);
+    return res.data.user;
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await authApi.logout();
+    } finally {
+      disconnectSocket();
+      setUser(null);
+    }
+  }, []);
+
+  const updateUser = useCallback((partial) => setUser((u) => ({ ...u, ...partial })), []);
+
   return (
-    <authContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateUser }}>
       {children}
-    </authContext.Provider>
+    </AuthContext.Provider>
   );
-};
-
-export { AuthProvider, authContext };
+}

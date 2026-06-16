@@ -1,3 +1,121 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --ink: 29 29 31;
+    --haze: 134 134 139;
+    --canvas: 245 245 247;
+    --surface: 255 255 255; /* glass panels, used at /70–/90 */
+    --fill: 0 0 0; /* subtle fills + hairlines, used at low opacity */
+    --glass-bg: 255 255 255;
+    --glass-edge: 255 255 255;
+    --glow1: 0 113 227;
+    --glow2: 175 82 222;
+  }
+
+  .dark {
+    color-scheme: dark;
+    --ink: 245 245 247;
+    --haze: 142 142 147;
+    --canvas: 0 0 0;
+    --surface: 28 28 30;
+    --fill: 255 255 255;
+    --glass-bg: 28 28 30;
+    --glass-edge: 255 255 255;
+    --glow1: 10 132 255;
+    --glow2: 191 90 242;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: rgb(var(--ink) / 1);
+    background-color: rgb(var(--canvas) / 1);
+    background-image:
+      radial-gradient(1200px 600px at 100% -10%, rgb(var(--glow1) / 0.1), transparent 60%),
+      radial-gradient(1000px 500px at -10% 110%, rgb(var(--glow2) / 0.09), transparent 60%);
+    background-attachment: fixed;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::selection {
+    background: rgb(var(--glow1) / 0.22);
+  }
+}
+
+@layer components {
+  /* Frosted glass surface, the core Apple material */
+  .glass {
+    background: rgb(var(--glass-bg) / 0.7);
+    @apply backdrop-blur-xl shadow-glass;
+    border: 1px solid rgb(var(--glass-edge) / 0.12);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium
+           transition-all duration-200 active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none select-none;
+  }
+  .btn-primary {
+    @apply btn bg-accent text-white hover:bg-accentDark shadow-soft;
+  }
+  .btn-secondary {
+    @apply btn text-ink shadow-soft;
+    background: rgb(var(--surface) / 0.85);
+    border: 1px solid rgb(var(--fill) / 0.08);
+  }
+  .btn-secondary:hover {
+    background: rgb(var(--surface) / 1);
+  }
+  .btn-ghost {
+    @apply btn text-ink/80 hover:bg-fill/5;
+  }
+  .btn-danger {
+    @apply btn bg-[#ff3b30] text-white hover:bg-[#ff453a] shadow-soft;
+  }
+
+  .field {
+    @apply w-full rounded-2xl px-4 py-3 text-[15px] text-ink
+           placeholder:text-haze outline-none transition-all duration-200
+           focus:border-accent/40 focus:ring-4 focus:ring-accent/15;
+    background: rgb(var(--surface) / 0.85);
+    border: 1px solid rgb(var(--fill) / 0.12);
+  }
+
+  .card {
+    @apply rounded-3xl backdrop-blur-xl shadow-soft;
+    background: rgb(var(--surface) / 0.85);
+    border: 1px solid rgb(var(--glass-edge) / 0.12);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+  }
+}
+
+/* Thin, unobtrusive scrollbars (macOS style) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--fill) / 0.18) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--fill) / 0.18);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--fill) / 0.3);
+}
