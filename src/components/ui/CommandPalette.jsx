@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Search, FolderKanban, CheckSquare, MessageSquare } from 'lucide-react';
 import { searchApi, chatApi } from '../../api/index.js';
@@ -84,8 +85,8 @@ export default function CommandPalette({ open, onClose }) {
   const empty =
     !res.projects.length && !res.tasks.length && !res.people.length && !res.messages.length;
 
-  return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center p-4 pt-[12vh] animate-fade-in" onMouseDown={onClose}>
+  return createPortal(
+    <div className="fixed inset-0 z-[1100] flex items-start justify-center p-4 pt-[12vh] animate-fade-in" onMouseDown={onClose}>
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
       <div
         className="relative w-full max-w-xl animate-pop-in overflow-hidden rounded-3xl border border-fill/10 bg-surface/95 shadow-lift backdrop-blur-xl"
@@ -140,6 +141,7 @@ export default function CommandPalette({ open, onClose }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Bell, AtSign, CheckSquare, UserPlus, Check, X, Plus, MessageSquare } from 'lucide-react';
 import { notificationApi } from '../../api/index.js';
@@ -128,12 +129,13 @@ export default function NotificationsBell() {
         )}
       </button>
 
-      {open && (
-        <div
-          ref={panelRef}
-          style={{ position: 'fixed', top: coords.top, left: coords.left, width: PANEL_W, zIndex: 70 }}
-          className="animate-pop-in overflow-hidden rounded-3xl border border-fill/10 bg-surface/95 shadow-lift backdrop-blur-xl"
-        >
+      {open &&
+        createPortal(
+          <div
+            ref={panelRef}
+            style={{ position: 'fixed', top: coords.top, left: coords.left, width: PANEL_W, zIndex: 1000 }}
+            className="animate-pop-in overflow-hidden rounded-3xl border border-fill/10 bg-surface/95 shadow-lift backdrop-blur-xl"
+          >
           <div className="flex items-center justify-between border-b border-fill/10 px-4 py-3">
             <span className="font-semibold">Notifications</span>
             {unread > 0 && (
@@ -169,8 +171,9 @@ export default function NotificationsBell() {
               })
             )}
           </div>
-        </div>
-      )}
+        </div>,
+          document.body
+        )}
     </>
   );
 }

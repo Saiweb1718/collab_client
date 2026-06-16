@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function Modal({ open, onClose, title, children, footer }) {
   useEffect(() => {
@@ -10,9 +11,11 @@ export default function Modal({ open, onClose, title, children, footer }) {
 
   if (!open) return null;
 
-  return (
+  // Portal to body so a backdrop-filter ancestor (e.g. the sidebar) can't trap
+  // this fixed overlay inside its stacking/containing context.
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-[1100] flex items-center justify-center p-4 animate-fade-in"
       onMouseDown={onClose}
     >
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
@@ -24,6 +27,7 @@ export default function Modal({ open, onClose, title, children, footer }) {
         {children}
         {footer && <div className="mt-6 flex justify-end gap-2">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
