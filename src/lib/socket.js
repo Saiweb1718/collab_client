@@ -1,8 +1,10 @@
 import { io } from 'socket.io-client';
-import { SERVER_URL } from '../api/client.js';
+import { SERVER_URL, getToken } from '../api/client.js';
 
-// Single shared socket connection. Auth travels via the httpOnly cookie
-// (withCredentials), so no token handling is needed on the client.
+// Single shared socket connection. Auth travels via the bearer token (handshake
+// `auth.token`), which works cross-domain; the cookie is still sent when
+// same-origin. The `auth` function is evaluated on every (re)connect so the
+// latest token is always used.
 let socket = null;
 
 export const getSocket = () => {
@@ -11,6 +13,7 @@ export const getSocket = () => {
       withCredentials: true,
       autoConnect: false,
       transports: ['websocket', 'polling'],
+      auth: (cb) => cb({ token: getToken() }),
     });
   }
   return socket;
